@@ -1,0 +1,14 @@
+name: captainsForTowers
+version: 2.0
+main: org.nicolie.captainsfortowers.CaptainsForTowers
+api-version: 1.13
+commands:
+  capitanes:
+    description: Asigna capitanes a un equipo.
+    usage: /capitanes <jugador1> <jugador2> [...]
+  lista:
+    description: Muestra la lista de jugadores en equipos.
+    usage: /lista
+  privado:
+    description: No deja que nadie más entre.
+    usage: /privado
