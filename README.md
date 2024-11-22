@@ -1,10 +1,10 @@
 # Captains For Towers
  A plugin made for [Amazing Towers](https://github.com/katanya04/The-Towers)  that implements various things like
 ## Features
-###Captain Management
+### Captain Management
 - Simplifies the process of adding captains to [Amazing Towers](https://github.com/katanya04/The-Towers).
   
-###Player Overview Command
+### Player Overview Command
 - Allows viewing the players currently participating in each instance independently.
 
 ### Private Mode
