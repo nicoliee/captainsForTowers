@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,7 +36,9 @@ public final class CaptainsForTowers extends JavaPlugin implements Listener {
         this.getCommand("lista").setExecutor(new ListaCommand());
         this.getCommand("privado").setExecutor(new PrivadoCommand());
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
-
+        // Reinicio inicial de variables
+        privadoActivado = false;
+        mundoPrivado = "";
     }
     public static class CapitanesCommand implements CommandExecutor {
 
@@ -241,6 +244,14 @@ public final class CaptainsForTowers extends JavaPlugin implements Listener {
         }
     }
 
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent event) {
+        // Verificar si el mundo cargado es el mundo con modo privado activado
+        if (privadoActivado && event.getWorld().getName().equals(mundoPrivado)) {
+            privadoActivado = false; // Desactivar modo privado
+            mundoPrivado = ""; // Limpiar el mundo
+        }
+    }
     @EventHandler
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
