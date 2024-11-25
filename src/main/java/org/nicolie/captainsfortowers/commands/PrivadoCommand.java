@@ -7,9 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class PrivadoCommand implements CommandExecutor {
-        private boolean privadoActivado = false;
-        private String mundoPrivado = "";
-    
+        private boolean privadoActivado = false; // Variable para saber si el modo privado está activado
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
             if (command.getName().equalsIgnoreCase("privado")) {
@@ -40,8 +38,7 @@ public class PrivadoCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.YELLOW + "El modo privado ya está activado.");
                     } else {
                         privadoActivado = true;
-                        mundoPrivado = player.getWorld().getName(); // Guardar el mundo donde se ejecutó el comando
-                        player.sendMessage(ChatColor.GREEN + "Modo privado activado en el mundo " + mundoPrivado + ".");
+                        player.sendMessage(ChatColor.GREEN + "Modo privado activado en el mundo.");
                     }
                 } else if (argumento.equals("off")) {
                     // Desactivar modo privado
@@ -49,7 +46,7 @@ public class PrivadoCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.YELLOW + "El modo privado ya está desactivado.");
                     } else {
                         privadoActivado = false;
-                        mundoPrivado = ""; // Limpiar el mundo al desactivar el modo privado
+
                         player.sendMessage(ChatColor.RED + "Modo privado desactivado.");
                     }
                 } else {
