@@ -6,6 +6,7 @@
   
 ### Player Overview Command
 - Allows viewing the players currently participating in each instance independently.
+- Allows viewing the players currently participating on every instance
 
 ### Private Mode
 - When activated, any new players joining the instance will not be allowed to join a team.
