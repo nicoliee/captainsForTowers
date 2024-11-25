@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.bukkit.event.Listener;
 
@@ -35,6 +37,7 @@ public final class CaptainsForTowers extends JavaPlugin implements Listener {
         this.getCommand("capitanes").setExecutor(new CapitanesCommand());
         this.getCommand("lista").setExecutor(new ListaCommand());
         this.getCommand("privado").setExecutor(new PrivadoCommand());
+        this.getCommand("listatodos").setExecutor(new ListaTodosCommand());
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         // Reinicio inicial de variables
         privadoActivado = false;
@@ -211,7 +214,9 @@ public final class CaptainsForTowers extends JavaPlugin implements Listener {
         }
     }
     public class PrivadoCommand implements CommandExecutor {
-
+        private boolean privadoActivado = false;
+        private String mundoPrivado = "";
+    
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
             if (command.getName().equalsIgnoreCase("privado")) {
@@ -225,22 +230,98 @@ public final class CaptainsForTowers extends JavaPlugin implements Listener {
                     sender.sendMessage("Este comando solo puede ser ejecutado por un jugador.");
                     return true;
                 }
+    
                 Player player = (Player) sender;
-
-                // Activar o desactivar el modo privado
-                privadoActivado = !privadoActivado;
-
-                if (privadoActivado) {
-                    mundoPrivado = player.getWorld().getName(); // Guardar el mundo donde se ejecutó el comando
-                    player.sendMessage(ChatColor.GREEN + "Modo privado activado en el mundo " + mundoPrivado + ".");
-                } else {
-                    mundoPrivado = ""; // Limpiar el mundo al desactivar el modo privado
-                    player.sendMessage(ChatColor.RED + "Modo privado desactivado.");
+    
+                // Verificar si se ha pasado un argumento
+                if (args.length == 0) {
+                    player.sendMessage(ChatColor.RED + "Uso incorrecto. Usa /privado on o /privado off.");
+                    return true;
                 }
-
+    
+                String argumento = args[0].toLowerCase();
+    
+                if (argumento.equals("on")) {
+                    // Activar modo privado
+                    if (privadoActivado) {
+                        player.sendMessage(ChatColor.YELLOW + "El modo privado ya está activado.");
+                    } else {
+                        privadoActivado = true;
+                        mundoPrivado = player.getWorld().getName(); // Guardar el mundo donde se ejecutó el comando
+                        player.sendMessage(ChatColor.GREEN + "Modo privado activado en el mundo " + mundoPrivado + ".");
+                    }
+                } else if (argumento.equals("off")) {
+                    // Desactivar modo privado
+                    if (!privadoActivado) {
+                        player.sendMessage(ChatColor.YELLOW + "El modo privado ya está desactivado.");
+                    } else {
+                        privadoActivado = false;
+                        mundoPrivado = ""; // Limpiar el mundo al desactivar el modo privado
+                        player.sendMessage(ChatColor.RED + "Modo privado desactivado.");
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "Uso incorrecto. Usa /privado on o /privado off.");
+                }
+    
                 return true;
             }
             return false;
+        }
+    }
+    public class ListaTodosCommand implements CommandExecutor{
+        @Override
+        public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+            if (command.getName().equalsIgnoreCase("listatodos")) {
+                // Mapa para almacenar jugadores por mundo
+                Map<String, List<String>> jugadoresPorMundo = new HashMap<>();
+
+                // Agrupar jugadores por mundo
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    String mundo = player.getWorld().getName();
+                    jugadoresPorMundo.computeIfAbsent(mundo, k -> new ArrayList<>()).add(player.getName());
+                }
+
+                // Construir el mensaje de salida
+                StringBuilder mensaje = new StringBuilder(ChatColor.YELLOW + "Jugadores por mundo:\n");
+                for (Map.Entry<String, List<String>> entry : jugadoresPorMundo.entrySet()) {
+                    String mundo = entry.getKey();
+                    List<String> jugadores = entry.getValue();
+
+                    // Agregar información del mundo y cantidad de jugadores
+                    mensaje.append(ChatColor.GRAY).append(mundo).append(": ").append(ChatColor.WHITE).append(jugadores.size()).append("\n");
+
+                    // Formatear la lista de jugadores
+                    mensaje.append(formatearListaJugadores(jugadores)).append("\n");
+                }
+
+                // Enviar el mensaje al ejecutor del comando
+                sender.sendMessage(mensaje.toString());
+                return true;
+            }
+            return false;
+        }
+
+        // Método para formatear la lista de jugadores
+        private String formatearListaJugadores(List<String> jugadores) {
+            StringBuilder lista = new StringBuilder();
+            
+            for (int i = 0; i < jugadores.size(); i++) {
+                String jugador = jugadores.get(i);
+                
+                // Añadir el nombre del jugador con color gris
+                lista.append(ChatColor.GRAY).append(jugador);
+                
+                // Si no es el último jugador, añadir coma y espacio en gris oscuro
+                if (i < jugadores.size() - 2) {
+                    lista.append(ChatColor.DARK_GRAY).append(", ");
+                }
+                // Si es el penúltimo jugador, añadir "y" en gris oscuro antes del último jugador
+                else if (i == jugadores.size() - 2) {
+                    lista.append(ChatColor.DARK_GRAY).append(" y ");
+                }
+            }
+            
+            return lista.toString();
         }
     }
 

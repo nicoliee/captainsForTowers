@@ -9,6 +9,9 @@ commands:
   lista:
     description: Muestra la lista de jugadores en equipos.
     usage: /lista
+  listatodos:
+    description: Muestra la lista de jugadores.
+    usage: /listatodos
   privado:
     description: No deja que nadie más entre.
-    usage: /privado
+    usage: /privado [on|off]
